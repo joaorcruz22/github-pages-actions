@@ -1,0 +1,3 @@
+# List all files for debugging purposes
+      - name: List files for debugging
+        run: ls -R  # This will list all files and directories recursively
