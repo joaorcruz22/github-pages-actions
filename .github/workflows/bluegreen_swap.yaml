@@ -1,0 +1,47 @@
+name: Blue/Green Deployment Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy-bluegreen:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up a web server (e.g., using an Nginx container or any static file server)
+      - name: Set up web server (Nginx or static file server)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+          sudo service nginx start
+
+      # Step 3: Deploy Blue environment (index.html)
+      - name: Deploy to Blue environment
+        run: |
+          echo "Deploying Blue Environment"
+          sudo cp index.html /var/www/html/index.html
+
+      # Step 4: Deploy Green environment (index_v2.html)
+      - name: Deploy to Green environment
+        run: |
+          echo "Deploying Green Environment"
+          sudo cp index_v2.html /var/www/html/index_v2.html
+
+      # Step 5: Simulate a Traffic Swap
+      - name: Swap Traffic (Blue <-> Green)
+        run: |
+          # You can swap between Blue and Green by modifying which file is served in the default path
+          echo "Swapping Traffic from Blue to Green"
+          sudo ln -sf /var/www/html/index_v2.html /var/www/html/index.html
+          # Alternatively, you can also use a load balancer to route traffic
+          
+      # Step 6: Verify the deployment (simple test)
+      - name: Verify Deployment
+        run: |
+          curl -s http://localhost | grep "How Much Do You Like DevOps?"
