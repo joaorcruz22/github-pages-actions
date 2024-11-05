@@ -1,0 +1,42 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on push to 'main'
+  workflow_dispatch:  # Allow manual triggering from the UI
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest  # Run the workflow on an Ubuntu-based container
+
+    steps:
+      # Step 1: Checkout code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js for running HTML linter and test script
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Set Node.js version
+
+      # Step 3: Install htmlhint (HTML linter)
+      - name: Install htmlhint
+        run: npm install htmlhint  # Install htmlhint
+
+      # Step 4: Run the HTML linter (htmlhint)
+      - name: Lint HTML
+        run: htmlhint index.html  # Run htmlhint on index.html
+
+      # Step 5: Run the custom test script to check for <title> tag
+      - name: Run title test
+        run: node test-title.js  # Run the title test script
+
+      # Step 6: Deploy to GitHub Pages (only if previous steps are successful)
+      - name: Deploy to GitHub Pages
+        if: success()  # Only run if both the linter and test pass
+        run: |
+          echo "Deploying website to GitHub Pages..."
+          # Example deployment command (customize as needed)
+          # git push origin gh-pages
