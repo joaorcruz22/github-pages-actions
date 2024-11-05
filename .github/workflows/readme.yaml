@@ -47,3 +47,9 @@ jobs:
           // Write to README.md
           fs.writeFileSync("README.md", readmeContent);
           '
+        - name: run
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Auto-generate README from index.html"
+          git push
