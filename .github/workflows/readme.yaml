@@ -27,12 +27,12 @@ jobs:
       - name: Install dependencies
         run: npm install jsdom
 
-      - name: Generate README
+      - name: README
         run: |
           node -e "
           const fs = require('fs');
           const { JSDOM } = require('jsdom');
-          
+
           // Load index.html
           const htmlContent = fs.readFileSync('index.html', 'utf-8');
           const dom = new JSDOM(htmlContent);
@@ -48,11 +48,10 @@ jobs:
           fs.writeFileSync('README.md', readmeContent);
           "
 
-      - name: Commit and push generated README
+      - name: run
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
           git commit -m "Auto-generate README from index.html"
           git push
-          
