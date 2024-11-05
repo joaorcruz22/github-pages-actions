@@ -1,0 +1,39 @@
+name: Change Page Title and Lint HTML
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'Enter the new title for the page'
+        required: true
+        default: 'New Title'
+
+jobs:
+  change-title:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install HTMLHint (HTML Linter)
+        run: |
+          npm install -g htmlhint
+
+      - name: Lint HTML
+        run: |
+          htmlhint index.html
+        continue-on-error: false
+
+      - name: Change title in index.html
+        run: |
+          new_title="${{ github.event.inputs.title }}"
+          sed -i "s|<title>.*</title>|<title>$new_title</title>|" index.html
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Change page title to: ${{ github.event.inputs.title }}"
+          git push
