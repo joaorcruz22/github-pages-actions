@@ -1,10 +1,9 @@
-name: Change Page Title and Lint HTML
-
+name: change name
 on:
   workflow_dispatch:
     inputs:
       title:
-        description: 'Enter the new title for the page'
+        description: 'name'
         required: true
         default: 'New Title'
 
